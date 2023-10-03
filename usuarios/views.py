@@ -1,5 +1,9 @@
 from django.shortcuts import redirect, render
+from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.messages import constants
+
+from vitalab.settings import MESSAGE_TAGS
 
 # Create your views here.
 def cadastro(request):
@@ -18,9 +22,11 @@ def cadastro(request):
         confirmar_senha = request.POST.get('confirmar_senha')
 
         if not senha == confirmar_senha:    
+            messages.add_message(request, constants.ERROR, 'As senhas não coincidem')
             return redirect('/usuarios/cadastro')
         
         if len(senha) < 6:
+            messages.add_message(request, constants.ERROR, 'Preencha todos os campos')
             return redirect('/usuarios/cadastro')
         
         try:
@@ -33,6 +39,7 @@ def cadastro(request):
                 password=senha,
             )
         except:
+            messages.add_message(request, constants.ERROR, 'Erro interno do sistema')
             return redirect('/usuarios/cadastro')
 
 
